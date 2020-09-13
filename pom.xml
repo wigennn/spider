@@ -8,6 +8,7 @@
         <module>sprider-sanalyzer</module>
         <module>spiders-downloader</module>
         <module>spiders-analyzer</module>
+        <module>spiders-center</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

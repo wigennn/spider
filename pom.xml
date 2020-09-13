@@ -5,8 +5,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>spiders-downloader</module>
-        <module>sprider-sanalyzer</module>
-        <module>spiders-downloader</module>
         <module>spiders-analyzer</module>
         <module>spiders-center</module>
     </modules>

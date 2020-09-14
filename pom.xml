@@ -6,7 +6,6 @@
     <modules>
         <module>spiders-downloader</module>
         <module>spiders-analyzer</module>
-        <module>spiders-center</module>
         <module>spiders-worker</module>
     </modules>
     <parent>

@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,14 +23,15 @@ import java.util.regex.Pattern;
  */
 public class SpiderWorker {
 
-    private static ExecutorService threadPool = Executors.newCachedThreadPool();
+    private static ExecutorService threadPool = Executors.newFixedThreadPool(12);
     private static final List<LinkedBlockingQueue> queueList = new ArrayList<>();
 
-    private static volatile Set<String> htmlUrls = new LinkedHashSet<>();
+    private static AtomicInteger i = new AtomicInteger();
 
 
     public static void main(String[] args) {
         String url = "http://www.baidu.com";
+        Set<String> htmlUrls = new LinkedHashSet<>();
 
         try {
             start(url, htmlUrls);
@@ -40,9 +42,6 @@ public class SpiderWorker {
     }
 
     private static void start(String url, Set<String> htmlUrls) throws Exception {
-
-        int size = 300;
-        if (htmlUrls.size() > size) return;
 
         if (StringUtils.isEmpty(url)) {
             return;
@@ -58,25 +57,22 @@ public class SpiderWorker {
 
             // html
             String html = response.body().string();
-            System.out.println(html);
+//            System.out.println(html);
 
             // 预先分析出url，放入下次爬虫队列中
             preAnalyzeUrl(html, htmlUrls);
 
             if (!CollectionUtils.isEmpty(htmlUrls)) {
-                htmlUrls.forEach(htmlUrl -> {
-                    threadPool.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (htmlUrls.size() > size) return;
-                                start(htmlUrl, htmlUrls);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                
+/*                htmlUrls.forEach(htmlUrl -> {
+                    threadPool.submit(() -> {
+                        try {
+                            start(htmlUrl, htmlUrls);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     });
-                });
+                });*/
             }
 
             // 取队列数据分析
@@ -90,16 +86,15 @@ public class SpiderWorker {
      * 分析出url
      */
     private static void preAnalyzeUrl(String html, Set<String> urls) {
+        i.addAndGet(1);
+        if (i.get() > 100) return;
         Pattern pattern = Pattern.compile("((https?|ftp|file):)?//[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");
         Matcher matcher = pattern.matcher(html);
         if (matcher.find()) {
             int end = matcher.end();
             String re = matcher.group();
-            synchronized (htmlUrls) {
-                urls.add(fixUrl(re));
-            }
-
-            System.out.println("正则结果:" + re);
+            urls.add(fixUrl(re));
+            System.out.println("正则结果:" + urls);
 
             String hh = html.substring(end);
             preAnalyzeUrl(hh, urls);

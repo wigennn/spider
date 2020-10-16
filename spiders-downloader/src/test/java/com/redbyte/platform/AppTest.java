@@ -1,4 +1,4 @@
-package com.redbyte.wigen;
+package com.redbyte.platform;
 
 import static org.junit.Assert.assertTrue;
 

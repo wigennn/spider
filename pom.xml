@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>spiders-downloader</module>
-        <module>spiders-analyzer</module>
         <module>spiders-worker</module>
+        <module>spiders-analyzer</module>
+        <module>spiders-downloader</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -14,7 +14,7 @@
         <version>2.3.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.redbyte.wigen</groupId>
+    <groupId>com.redbyte.platform</groupId>
     <artifactId>spiders</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spiders</name>
